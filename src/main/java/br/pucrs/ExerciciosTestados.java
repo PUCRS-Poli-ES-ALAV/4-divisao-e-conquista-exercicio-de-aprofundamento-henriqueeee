@@ -64,6 +64,28 @@ public class ExerciciosTestados {
             System.out.println("Tempo gasto (milissegundos): " + (endTime4 - startTime4) / 1_000_000.0);
             System.out.println();
         }
+
+        int[] sizes2 = {4, 16, 64}; 
+        for (int size : sizes2) {
+            try {
+                int n1 = generateRandomInt(size);
+                int n2 = generateRandomInt(size);
+                iterations = 0;
+                long startTime5 = System.nanoTime();
+                long result = multiply2(n1, n2, size);
+                long endTime5 = System.nanoTime();
+                System.out.println("Exercicio 5 - Tamanho do número: " + size + " bits");
+                System.out.println("Resultado da multiplicação: " + result);
+                System.out.println("Número de iterações: " + iterations);
+                System.out.println(n1);
+                System.out.println(n2);
+                System.out.println("Tempo gasto (milissegundos): " + (endTime5 - startTime5) / 1_000_000.0);
+                System.out.println();
+            } catch (Exception e) {
+                System.err.println("Error generating random integers: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
     }
 
     // Merge Sort (Ex 1)
@@ -172,6 +194,30 @@ public class ExerciciosTestados {
         return p1 * (1L << (2 * (maxLength - mid))) + (p3 - p1 - p2) * (1L << (maxLength - mid)) + p2;
     }
 
+    // Multiplicação (Ex 5)
+    public static long multiply2(int x, int y, int n) {
+        iterations++; // Contabiliza a chamada da função
+
+        // se ambos os números tiverem tamanho 1, multiplicar e retornar
+        if (n == 1) {
+            return x * y;
+        } else {
+            // pega o meio do tamanho
+            int m = n / 2;
+            int a = x >> m;
+            int b = x & ((1 << m) - 1);
+            int c = y >> m;
+            int d = y & ((1 << m) - 1);
+
+            // agora, realizaremos as multiplicações. Para o terceiro, vamos usar a soma
+            long e = multiply2(a, c, m);
+            long f = multiply2(b, d, m);
+            long g = multiply2(b, c, m);
+            long h = multiply2(a, d, m);
+            return (e << (2 * m)) + ((g + h) << m) + f;
+        }
+    }
+
     // Gerador de arrays aleatórios para o exercício 1
     private static int[] generateRandomArray(int size) {
         int[] array = new int[size];
@@ -199,5 +245,10 @@ public class ExerciciosTestados {
             binary.append((int) (Math.random() * 2)); // Gera 0 ou 1 aleatoriamente
         }
         return binary.toString();
+    }
+
+    public static int generateRandomInt(int size) {
+        Random random = new Random();
+        return random.nextInt(Math.abs((int) Math.pow(2, size)));
     }
 }
